@@ -47,4 +47,38 @@ const double& Matrix::operator()(size_t row, size_t col) const{
   return data_[index(row, col)];
 }
 
+Matrix Matrix::operator+(const Matrix& other) const{
+  checkSameDimensions(other);
+  Matrix result(rows_, cols_);
+
+  for(size_t i{0}; i<size(); ++i){
+    result.data_[i] = data_[i] + other.data_[i];
+  }
+
+  return result;
+}
+
+Matrix Matrix::operator-(const Matrix& other) const{
+  checkSameDimensions(other);
+  Matrix result(rows_, cols_);
+
+  for(size_t i{0}; i<size(); ++i){
+    result.data_[i] = data_[i] - other.data_[i];
+  }
+
+  return result;
+}
+
+void Matrix::checkSameDimensions(const Matrix& other) const{
+  if(rows_ != other.rows_ || cols_ != other.cols_){
+    throw std::invalid_argument("Matrices must have the same dimensions.");
+  }
+}
+
+void Matrix::checkMultiplicationDimensions(const Matrix& other) const{
+  if(cols_ != other.rows_){
+    throw std::invalid_argument("Matrices must have the same dimensions.");
+  }
+}
+
 } // namespace cnn
