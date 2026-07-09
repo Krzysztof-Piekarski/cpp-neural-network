@@ -47,25 +47,50 @@ const double& Matrix::operator()(size_t row, size_t col) const{
   return data_[index(row, col)];
 }
 
-Matrix Matrix::operator+(const Matrix& other) const{
+
+Matrix& Matrix::operator+=(const Matrix& other){
   checkSameDimensions(other);
-  Matrix result(rows_, cols_);
 
   for(size_t i{0}; i<size(); ++i){
-    result.data_[i] = data_[i] + other.data_[i];
+    data_[i] += other.data_[i];
   }
 
+  return *this;
+}
+
+Matrix Matrix::operator+(const Matrix& other) const{
+  Matrix result(*this);
+  result += other;
   return result;
 }
 
-Matrix Matrix::operator-(const Matrix& other) const{
+Matrix& Matrix::operator-=(const Matrix& other){
   checkSameDimensions(other);
-  Matrix result(rows_, cols_);
 
   for(size_t i{0}; i<size(); ++i){
-    result.data_[i] = data_[i] - other.data_[i];
+    data_[i] -= other.data_[i];
   }
 
+  return *this;
+}
+
+Matrix Matrix::operator-(const Matrix& other) const{
+  Matrix result(*this);
+  result -= other;
+  return result;
+}
+
+Matrix& Matrix::operator*=(double scalar){
+  for(size_t i{0}; i<size(); ++i){
+    data_[i] *= scalar;
+  }
+
+  return *this;
+}
+
+Matrix Matrix::operator*(double scalar) const{
+  Matrix result(*this);
+  result *= scalar;
   return result;
 }
 

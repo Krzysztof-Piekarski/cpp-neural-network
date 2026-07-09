@@ -165,3 +165,29 @@ TEST(Matrix, SubtractionThrowsForDifferentDimensions){
 
     EXPECT_THROW(a - b, std::invalid_argument);
 }
+
+TEST(Matrix, ScalarMultiplication){
+    cnn::Matrix matrix(2,2);
+    FillMatrix(matrix);
+
+    matrix = matrix * 2.0;
+
+    EXPECT_DOUBLE_EQ(matrix(0,0), 2.0);
+    EXPECT_DOUBLE_EQ(matrix(0,1), 4.0);
+    EXPECT_DOUBLE_EQ(matrix(1,0), 6.0);
+    EXPECT_DOUBLE_EQ(matrix(1,1), 8.0);
+
+    matrix = matrix * 2u;
+
+    EXPECT_DOUBLE_EQ(matrix(0,0), 4.0);
+    EXPECT_DOUBLE_EQ(matrix(0,1), 8.0);
+    EXPECT_DOUBLE_EQ(matrix(1,0), 12.0);
+    EXPECT_DOUBLE_EQ(matrix(1,1), 16.0);
+
+    matrix = matrix * 0.25f;
+
+    EXPECT_DOUBLE_EQ(matrix(0,0), 1.0);
+    EXPECT_DOUBLE_EQ(matrix(0,1), 2.0);
+    EXPECT_DOUBLE_EQ(matrix(1,0), 3.0);
+    EXPECT_DOUBLE_EQ(matrix(1,1), 4.0);
+}

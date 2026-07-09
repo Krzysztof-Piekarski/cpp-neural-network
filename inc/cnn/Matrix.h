@@ -17,8 +17,12 @@ public:
     double& operator()(size_t row, size_t col);
     const double& operator()(size_t row, size_t col) const;
 
+    Matrix& operator+=(const Matrix& other);
     Matrix operator+(const Matrix& other) const;
+    Matrix& operator-=(const Matrix& other);
     Matrix operator-(const Matrix& other) const;
+    Matrix& operator*=(double scalar);
+    Matrix operator*(double scalar) const;
 
 private:
     void checkSameDimensions(const Matrix& other) const;
