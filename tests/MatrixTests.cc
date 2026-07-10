@@ -128,6 +128,28 @@ TEST(Matrix, CopyAssignmentCreatesIndependentCopy){
     EXPECT_DOUBLE_EQ(matrix2(0,0), 2.2);
 }
 
+TEST(Matrix, AdditionThrowsForDifferentDimensions){
+    cnn::Matrix a(2,3);
+    cnn::Matrix b(3,2);
+
+    EXPECT_THROW(a + b, std::invalid_argument);
+    EXPECT_THROW(a += b, std::invalid_argument);
+}
+
+TEST(Matrix, AdditionAssignment){
+    cnn::Matrix a(2,2, 1.1);
+    cnn::Matrix b(2,2, 3.3);
+
+    a += b;
+
+    EXPECT_DOUBLE_EQ(a(0,0),4.4);
+    EXPECT_DOUBLE_EQ(a(0,1),4.4);
+    EXPECT_DOUBLE_EQ(a(1,0),4.4);
+    EXPECT_DOUBLE_EQ(a(1,1),4.4);
+
+    EXPECT_DOUBLE_EQ(b(0,0),3.3);
+}
+
 TEST(Matrix, Addition){
     cnn::Matrix a(2,2, 1.1);
     cnn::Matrix b(2,2, 3.3);
@@ -140,11 +162,36 @@ TEST(Matrix, Addition){
     EXPECT_DOUBLE_EQ(c(1,1),4.4);
 }
 
-TEST(Matrix, AdditionThrowsForDifferentDimensions){
+TEST(Matrix, AdditionAssignmentReturnsReference){
+    cnn::Matrix a(2,2, 1.1);
+    cnn::Matrix b(2,2, 2.2);
+    cnn::Matrix c(2,2, 3.3);
+
+    (a += b) += c;
+
+    EXPECT_DOUBLE_EQ(a(0,0),6.6);
+}
+
+TEST(Matrix, SubtractionThrowsForDifferentDimensions){
     cnn::Matrix a(2,3);
     cnn::Matrix b(3,2);
 
-    EXPECT_THROW(a + b, std::invalid_argument);
+    EXPECT_THROW(a - b, std::invalid_argument);
+    EXPECT_THROW(a -= b, std::invalid_argument);
+}
+
+TEST(Matrix, SubtractionAssignment){
+    cnn::Matrix a(2,2, 3.3);
+    cnn::Matrix b(2,2, 1.1);
+
+    a -= b;
+
+    EXPECT_DOUBLE_EQ(a(0,0),2.2);
+    EXPECT_DOUBLE_EQ(a(0,1),2.2);
+    EXPECT_DOUBLE_EQ(a(1,0),2.2);
+    EXPECT_DOUBLE_EQ(a(1,1),2.2);
+
+    EXPECT_DOUBLE_EQ(b(1,1),1.1);
 }
 
 TEST(Matrix, Subtraction){
@@ -159,35 +206,60 @@ TEST(Matrix, Subtraction){
     EXPECT_DOUBLE_EQ(c(1,1),2.2);
 }
 
-TEST(Matrix, SubtractionThrowsForDifferentDimensions){
-    cnn::Matrix a(2,3);
-    cnn::Matrix b(3,2);
+TEST(Matrix, SubtractionAssignmentReturnsReference){
+    cnn::Matrix a(2,2, 1.0);
+    cnn::Matrix b(2,2, 2.0);
+    cnn::Matrix c(2,2, 3.0);
 
-    EXPECT_THROW(a - b, std::invalid_argument);
+    (a -= b) -= c;
+
+    EXPECT_DOUBLE_EQ(a(0,0),-4.0);
 }
 
-TEST(Matrix, ScalarMultiplication){
+TEST(Matrix, ScalarMultiplicationAssignment){
     cnn::Matrix matrix(2,2);
     FillMatrix(matrix);
 
-    matrix = matrix * 2.0;
+    matrix *= 2.0;
 
     EXPECT_DOUBLE_EQ(matrix(0,0), 2.0);
     EXPECT_DOUBLE_EQ(matrix(0,1), 4.0);
     EXPECT_DOUBLE_EQ(matrix(1,0), 6.0);
     EXPECT_DOUBLE_EQ(matrix(1,1), 8.0);
 
-    matrix = matrix * 2u;
+    matrix *= 2u;
 
     EXPECT_DOUBLE_EQ(matrix(0,0), 4.0);
-    EXPECT_DOUBLE_EQ(matrix(0,1), 8.0);
-    EXPECT_DOUBLE_EQ(matrix(1,0), 12.0);
-    EXPECT_DOUBLE_EQ(matrix(1,1), 16.0);
 
-    matrix = matrix * 0.25f;
+    matrix *= 0.25f;
 
     EXPECT_DOUBLE_EQ(matrix(0,0), 1.0);
-    EXPECT_DOUBLE_EQ(matrix(0,1), 2.0);
-    EXPECT_DOUBLE_EQ(matrix(1,0), 3.0);
-    EXPECT_DOUBLE_EQ(matrix(1,1), 4.0);
+}
+
+TEST(Matrix, ScalarMultiplication){
+    cnn::Matrix matrix(2,2);
+    FillMatrix(matrix);
+
+    cnn::Matrix matrix2 = matrix * 2.0;
+
+    EXPECT_DOUBLE_EQ(matrix2(0,0), 2.0);
+    EXPECT_DOUBLE_EQ(matrix2(0,1), 4.0);
+    EXPECT_DOUBLE_EQ(matrix2(1,0), 6.0);
+    EXPECT_DOUBLE_EQ(matrix2(1,1), 8.0);
+
+    matrix = matrix * 2u;
+
+    EXPECT_DOUBLE_EQ(matrix(0,0), 2.0);
+
+    matrix = matrix2 * 0.25f;
+
+    EXPECT_DOUBLE_EQ(matrix(0,0), 0.5);
+}
+
+TEST(Matrix, ScalarMultiplicationAssignmentReturnsReference){
+    cnn::Matrix a(2,2, 1.0);
+
+    (a *= 2.0) *= 4.f;
+
+    EXPECT_DOUBLE_EQ(a(0,0),8.0);
 }
