@@ -23,6 +23,7 @@ public:
     Matrix operator-(const Matrix& other) const;
     Matrix& operator*=(double scalar);
     Matrix operator*(double scalar) const;
+    Matrix operator*(const Matrix& other) const;
 
 private:
     void checkSameDimensions(const Matrix& other) const;
@@ -32,6 +33,8 @@ private:
     size_t cols_{0};
     size_t index(size_t row, size_t col) const noexcept;
     std::vector<double> data_;
+
+    static constexpr double kEpsilon = 1e-9;
 };
 
 } // namespace cnn

@@ -47,6 +47,17 @@ const double& Matrix::operator()(size_t row, size_t col) const{
   return data_[index(row, col)];
 }
 
+void Matrix::checkSameDimensions(const Matrix& other) const{
+  if(rows_ != other.rows_ || cols_ != other.cols_){
+    throw std::invalid_argument("Matrices must have the same dimensions.");
+  }
+}
+
+void Matrix::checkMultiplicationDimensions(const Matrix& other) const{
+  if(cols_ != other.rows_){
+    throw std::invalid_argument("Matrices must have the same dimensions.");
+  }
+}
 
 Matrix& Matrix::operator+=(const Matrix& other){
   checkSameDimensions(other);
@@ -94,16 +105,21 @@ Matrix Matrix::operator*(double scalar) const{
   return result;
 }
 
-void Matrix::checkSameDimensions(const Matrix& other) const{
-  if(rows_ != other.rows_ || cols_ != other.cols_){
-    throw std::invalid_argument("Matrices must have the same dimensions.");
-  }
-}
+Matrix Matrix::operator*(const Matrix& other) const{
+  checkMultiplicationDimensions(other);
+  Matrix result(rows_, other.cols_);
 
-void Matrix::checkMultiplicationDimensions(const Matrix& other) const{
-  if(cols_ != other.rows_){
-    throw std::invalid_argument("Matrices must have the same dimensions.");
+  for(size_t r{0}; r<rows_; ++r){
+    for(size_t c{0}; c<other.cols_; ++c){
+      double sum{0.0};
+      for(size_t i{0}; i<cols_; ++i){
+        sum+=(operator()(r,i)*other(i,c));
+      }
+      result(r,c) = sum;
+    }
   }
+
+  return result;
 }
 
 } // namespace cnn
