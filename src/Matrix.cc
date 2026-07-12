@@ -152,4 +152,22 @@ Matrix Matrix::operator*(const Matrix& other) const{
   return result;
 }
 
+bool Matrix::operator==(const Matrix& other) const{
+  if(rows_ != other.rows_ || cols_ != other.rows_){
+    return false;
+  }
+
+  for(size_t i{0}; i<size(); ++i){
+    if(std::abs(data_[i] - other.data_[i]) > kEpsilon){
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool Matrix::operator!=(const Matrix& other) const{
+  return !(*this == other);
+}
+
 } // namespace cnn

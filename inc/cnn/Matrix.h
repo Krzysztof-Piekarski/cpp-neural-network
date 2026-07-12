@@ -26,11 +26,14 @@ public:
     Matrix operator*(double scalar) const;
     Matrix operator*(const Matrix& other) const;
 
+    bool operator==(const Matrix& other) const;
+    bool operator!=(const Matrix& other) const;
+
 private:
     void checkInitializerList(const std::initializer_list<std::initializer_list<double>>& values) const;
     void checkSameDimensions(const Matrix& other) const;
     void checkMultiplicationDimensions(const Matrix& other) const;
-    
+
     size_t rows_{0};
     size_t cols_{0};
     size_t index(size_t row, size_t col) const noexcept;
