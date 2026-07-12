@@ -77,6 +77,49 @@ TEST(Matrix, InitializesAllElementsWithValue){
     EXPECT_DOUBLE_EQ(matrix(1,2), 8.88);
 }
 
+TEST(Matrix, ConstructorWithInitializerListThrowsForIncorrectDimensions){
+    EXPECT_THROW(cnn::Matrix matrix({{3.0,5.0},
+                                     {4.0,8.0},
+                                     {9.0,4.2,9.9}}), std::invalid_argument);
+}
+
+TEST(Matrix, ConstructorWithInitializerListThrowsForEmptyColumn){
+    EXPECT_THROW(cnn::Matrix matrix{{}}, std::invalid_argument);
+}
+
+TEST(Matrix, ConstructorWithInitializerListStoresValues){
+    cnn::Matrix matrix{{3.0,5.0},
+                        {4.0,8.0},
+                        {9.0,4.2}};
+
+    EXPECT_EQ(matrix.size(), 6);
+    EXPECT_EQ(matrix.rows(), 3);
+    EXPECT_EQ(matrix.cols(), 2);
+
+    EXPECT_DOUBLE_EQ(matrix(0,0), 3.0);
+    EXPECT_DOUBLE_EQ(matrix(0,1), 5.0);
+    EXPECT_DOUBLE_EQ(matrix(1,0), 4.0);
+    EXPECT_DOUBLE_EQ(matrix(1,1), 8.0);
+    EXPECT_DOUBLE_EQ(matrix(2,0), 9.0);
+    EXPECT_DOUBLE_EQ(matrix(2,1), 4.2);
+}
+
+TEST(Matrix, EmptyMatrixFromConstructorWithInitializerList){
+    cnn::Matrix matrix{};
+
+    EXPECT_TRUE(matrix.empty());
+    EXPECT_EQ(matrix.rows(), 0);
+    EXPECT_EQ(matrix.cols(), 0);
+}
+
+TEST(Matrix, MatrixWithOneValue){
+    cnn::Matrix matrix{{1.0}};
+
+    EXPECT_FALSE(matrix.empty());
+    EXPECT_EQ(matrix.rows(), 1);
+    EXPECT_EQ(matrix.cols(), 1);
+}
+
 TEST(Matrix, CopyConstructorCreatesIndependentCopy){
     cnn::Matrix matrix1(2,2);
     FillMatrix(matrix1);

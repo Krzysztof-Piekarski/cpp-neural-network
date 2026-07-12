@@ -13,6 +13,36 @@ Matrix::Matrix(size_t rows, size_t cols, double value)
       cols_(cols), 
       data_((rows * cols), value){}
 
+void Matrix::checkInitializerList(const std::initializer_list<std::initializer_list<double>>& values) const{
+  for(const auto& row : values){
+    if(row.size() != cols_){
+      throw std::invalid_argument("All rows in initializer_list must have the same number of columns.");
+    }
+  }
+
+  if(cols_ == 0){
+    throw std::invalid_argument("Initializer list must not contain empty rows.");
+  }
+}
+
+Matrix::Matrix(std::initializer_list<std::initializer_list<double>> values)
+    : rows_(values.size()),
+      cols_(values.size() == 0 ? 0 : values.begin()->size()),
+      data_(rows_ * cols_)
+      {
+        if (rows_ == 0){
+          return;
+        }
+        checkInitializerList(values);
+
+        size_t index{0};
+        for(const auto& row : values){
+          for(const double value : row){
+            data_[index++] = value;
+          }
+        }
+}
+
 size_t Matrix::rows() const noexcept{
   return rows_;
 }
@@ -55,7 +85,7 @@ void Matrix::checkSameDimensions(const Matrix& other) const{
 
 void Matrix::checkMultiplicationDimensions(const Matrix& other) const{
   if(cols_ != other.rows_){
-    throw std::invalid_argument("Matrices must have the same dimensions.");
+    throw std::invalid_argument("Matrices must have appropriate dimensions.");
   }
 }
 

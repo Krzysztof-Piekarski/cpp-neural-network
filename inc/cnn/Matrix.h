@@ -8,6 +8,7 @@ public:
     Matrix() = default;
     Matrix(size_t rows, size_t cols);
     Matrix(size_t rows, size_t cols, double value);
+    Matrix(std::initializer_list<std::initializer_list<double>> values);
 
     size_t rows() const noexcept;
     size_t cols() const noexcept;
@@ -26,9 +27,10 @@ public:
     Matrix operator*(const Matrix& other) const;
 
 private:
+    void checkInitializerList(const std::initializer_list<std::initializer_list<double>>& values) const;
     void checkSameDimensions(const Matrix& other) const;
     void checkMultiplicationDimensions(const Matrix& other) const;
-
+    
     size_t rows_{0};
     size_t cols_{0};
     size_t index(size_t row, size_t col) const noexcept;
