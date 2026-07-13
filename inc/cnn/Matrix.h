@@ -26,8 +26,10 @@ public:
     Matrix operator*(double scalar) const;
     Matrix operator*(const Matrix& other) const;
 
-    bool operator==(const Matrix& other) const;
-    bool operator!=(const Matrix& other) const;
+    bool operator==(const Matrix& other) const noexcept;
+    bool operator!=(const Matrix& other) const noexcept;
+
+    Matrix transpose() const;
 
 private:
     void checkInitializerList(const std::initializer_list<std::initializer_list<double>>& values) const;

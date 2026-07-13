@@ -152,8 +152,8 @@ Matrix Matrix::operator*(const Matrix& other) const{
   return result;
 }
 
-bool Matrix::operator==(const Matrix& other) const{
-  if(rows_ != other.rows_ || cols_ != other.rows_){
+bool Matrix::operator==(const Matrix& other) const noexcept{
+  if(rows_ != other.rows_ || cols_ != other.cols_){
     return false;
   }
 
@@ -166,8 +166,20 @@ bool Matrix::operator==(const Matrix& other) const{
   return true;
 }
 
-bool Matrix::operator!=(const Matrix& other) const{
+bool Matrix::operator!=(const Matrix& other) const noexcept{
   return !(*this == other);
+}
+
+Matrix Matrix::transpose() const{
+  Matrix result(cols_, rows_);
+
+  for(size_t r{0}; r<rows_; ++r){
+    for(size_t c{0}; c<cols_; ++c){
+      result(c,r) = (*this)(r,c);
+    }
+  }
+
+  return result;
 }
 
 } // namespace cnn

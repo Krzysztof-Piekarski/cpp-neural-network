@@ -378,3 +378,24 @@ TEST(Matrix, MultiplicationOfTheSameMatrices){
     EXPECT_DOUBLE_EQ(a(1,1), 5.0);
     EXPECT_DOUBLE_EQ(b(1,1), 5.0);
 }
+
+TEST(Matrix, Transposition){
+    cnn::Matrix matrix{{1.0, 2.0},
+                       {3.0, 4.0},
+                       {5.0, 6.0}};
+    cnn::Matrix expected{{1.0, 3.0, 5.0},
+                         {2.0, 4.0, 6.0}};
+
+    EXPECT_TRUE(matrix.transpose() == expected);
+    EXPECT_EQ(matrix.rows(), 3);
+    EXPECT_EQ(matrix.cols(), 2);
+    EXPECT_DOUBLE_EQ(matrix(1,1), 4.0);
+}
+
+TEST(Matrix, DoubleTransposition){
+    cnn::Matrix matrix{{1.0, 2.0},
+                       {3.0, 4.0},
+                       {5.0, 6.0}};
+
+    EXPECT_TRUE(matrix.transpose().transpose() == matrix);
+}
