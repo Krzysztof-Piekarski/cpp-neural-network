@@ -399,3 +399,21 @@ TEST(Matrix, DoubleTransposition){
 
     EXPECT_TRUE(matrix.transpose().transpose() == matrix);
 }
+
+TEST(Matrix, MapWithLambda){
+    cnn::Matrix matrix{{1.0, 2.0},
+                       {3.0, 4.0},
+                       {5.0, 6.0}};
+    cnn::Matrix expected{{1.0, 4.0},
+                         {9.0, 16.0},
+                         {25.0, 36.0}};
+
+    cnn::Matrix c = matrix.map([](double x){
+        return x * x;
+    });
+
+    EXPECT_TRUE(c == expected);
+    EXPECT_EQ(matrix, (cnn::Matrix{{1.0, 2.0},
+                                   {3.0, 4.0},
+                                   {5.0, 6.0}}));
+}

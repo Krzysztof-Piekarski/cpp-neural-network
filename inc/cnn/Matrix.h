@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstddef>
 #include <vector>
 
@@ -30,6 +32,8 @@ public:
     bool operator!=(const Matrix& other) const noexcept;
 
     Matrix transpose() const;
+    template<typename Function>
+    Matrix map(Function fn) const;
 
 private:
     void checkInitializerList(const std::initializer_list<std::initializer_list<double>>& values) const;
@@ -45,3 +49,5 @@ private:
 };
 
 } // namespace cnn
+
+#include <cnn/Matrix.tpp>
