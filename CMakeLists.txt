@@ -10,6 +10,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(cnn
     src/Matrix.cc
+    src/Activation.cc
 )
 
 target_include_directories(cnn

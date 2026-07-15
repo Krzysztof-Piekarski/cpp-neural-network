@@ -1,4 +1,5 @@
 #include <cnn/Matrix.h>
+#include <cnn/Common.h>
 #include <stdexcept>
 
 namespace cnn{
