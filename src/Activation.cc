@@ -12,9 +12,11 @@ double sigmoid(double x) noexcept{
     return e / (1.0 + e);
 }
 
-/*double relu(double);
+double relu(double x) noexcept{
+    return x > 0.0 ? x : 0.0;
+}
 
-double tanh(double);
+/*double tanh(double);
 
 double sigmoidDerivative(double);
 

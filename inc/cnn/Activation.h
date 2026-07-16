@@ -4,7 +4,7 @@ namespace cnn::activation{
 
 double sigmoid(double) noexcept;
 
-double relu(double);
+double relu(double) noexcept;
 
 double tanh(double);
 
