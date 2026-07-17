@@ -12,14 +12,26 @@ double sigmoid(double x) noexcept{
     return e / (1.0 + e);
 }
 
+double sigmoidDerivative(double x) noexcept{
+    double sig = sigmoid(x);
+    return sig * (1.0 - sig);
+}
+
 double relu(double x) noexcept{
     return x > 0.0 ? x : 0.0;
 }
 
-/*double tanh(double);
+double reluDerivative(double x) noexcept{
+    return x > 0.0 ? 1.0 : 0.0;
+}
 
-double sigmoidDerivative(double);
+double tanh(double x) noexcept{
+    return std::tanh(x);
+}
 
-double reluDerivative(double);*/
+double tanhDerivative(double x) noexcept{
+    double tanh = std::tanh(x);
+    return 1.0 - (tanh * tanh);
+}
 
 } // namespace cnn::activation

@@ -4,12 +4,14 @@ namespace cnn::activation{
 
 double sigmoid(double) noexcept;
 
+double sigmoidDerivative(double) noexcept;
+
 double relu(double) noexcept;
 
-double tanh(double);
+double reluDerivative(double) noexcept;
 
-double sigmoidDerivative(double);
+double tanh(double) noexcept;
 
-double reluDerivative(double);
+double tanhDerivative(double) noexcept;
 
 } // namespace cnn::activation
