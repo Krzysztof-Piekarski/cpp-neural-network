@@ -12,6 +12,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(cnn_tests
     MatrixTests.cc
     ActivationTests.cc
+    InitializerTest.cc
 )
 
 target_link_libraries(cnn_tests
