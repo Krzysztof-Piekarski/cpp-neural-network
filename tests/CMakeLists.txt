@@ -13,6 +13,7 @@ add_executable(cnn_tests
     MatrixTests.cc
     ActivationTests.cc
     InitializerTest.cc
+    DenseLayer.cc
 )
 
 target_link_libraries(cnn_tests

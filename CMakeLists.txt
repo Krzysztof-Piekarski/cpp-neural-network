@@ -12,6 +12,7 @@ add_library(cnn
     src/Matrix.cc
     src/Activation.cc
     src/Initializer.cc
+    src/DenseLayer.cc
 )
 
 target_include_directories(cnn
