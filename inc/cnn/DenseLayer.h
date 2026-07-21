@@ -16,6 +16,9 @@ class DenseLayer{
 
         const Matrix& weights() const noexcept;
         const Matrix& bias() const noexcept;
+
+        void setWeights(const Matrix&);
+        void setBias(const Matrix&);
     
     private:
         Matrix weights_;
