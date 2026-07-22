@@ -12,40 +12,40 @@ void FillMatrix(cnn::Matrix& m){
 }
 
 TEST(Matrix, ConstructorStoresDimensions){
-    cnn::Matrix matrix(2,4);
+    cnn::Matrix matrix(2, 4);
 
     EXPECT_EQ(matrix.rows(), 2);
     EXPECT_EQ(matrix.cols(), 4);
 }
 
 TEST(Matrix, SizeReturnsNumberOfElements){
-    cnn::Matrix matrix(2,4);
+    cnn::Matrix matrix(2, 4);
 
     EXPECT_EQ(matrix.size(), 8);
     EXPECT_FALSE(matrix.empty());
 }
 
 TEST(Matrix, EmptyReturnsTrueForEmptyMatrix){
-    cnn::Matrix matrix(0,0);
+    cnn::Matrix matrix(0, 0);
 
     EXPECT_TRUE(matrix.empty());
 }
 
 TEST(Matrix, ConstSizeAndEmpty){
-    const cnn::Matrix matrix(4,4);
+    const cnn::Matrix matrix(4, 4);
 
     EXPECT_EQ(matrix.size(), 16);
     EXPECT_FALSE(matrix.empty());
 }
 
 TEST(Matrix, InitializesWithZero){
-    cnn::Matrix matrix(2,2);
+    cnn::Matrix matrix(2, 2);
 
     EXPECT_DOUBLE_EQ(matrix(1,0), 0.0);
 }
 
 TEST(Matrix, CanWriteAndReadElement){
-    cnn::Matrix matrix(2,4);
+    cnn::Matrix matrix(2, 4);
     EXPECT_DOUBLE_EQ(matrix(1,2), 0.0);
 
     matrix(1,2) = 4.4;
@@ -60,7 +60,7 @@ TEST(Matrix, ConstAccess){
 }
 
 TEST(Matrix, AccessOutsideBoundsThrows){
-    cnn::Matrix matrix(1,1);
+    cnn::Matrix matrix(1, 1);
 
     EXPECT_THROW(matrix(1,1), std::out_of_range);
 
@@ -137,7 +137,7 @@ TEST(Matrix, EqualityOperator){
 }
 
 TEST(Matrix, CopyConstructorCreatesIndependentCopy){
-    cnn::Matrix matrix1(2,2);
+    cnn::Matrix matrix1(2, 2);
     FillMatrix(matrix1);
     cnn::Matrix matrix2 = matrix1;
 
@@ -188,8 +188,8 @@ TEST(Matrix, CopyAssignmentCreatesIndependentCopy){
 }
 
 TEST(Matrix, AdditionThrowsForDifferentDimensions){
-    cnn::Matrix a(2,3);
-    cnn::Matrix b(3,2);
+    cnn::Matrix a(2, 3);
+    cnn::Matrix b(3, 2);
 
     EXPECT_THROW(a + b, std::invalid_argument);
     EXPECT_THROW(a += b, std::invalid_argument);
@@ -207,8 +207,8 @@ TEST(Matrix, AdditionAssignment){
 }
 
 TEST(Matrix, Addition){
-    cnn::Matrix a(2,2, 1.1);
-    cnn::Matrix b(2,2, 3.3);
+    cnn::Matrix a(2, 2, 1.1);
+    cnn::Matrix b(2, 2, 3.3);
     cnn::Matrix expected(2,2, 4.4);
 
     cnn::Matrix c = a + b;
@@ -230,16 +230,16 @@ TEST(Matrix, AdditionAssignmentReturnsReference){
 }
 
 TEST(Matrix, SubtractionThrowsForDifferentDimensions){
-    cnn::Matrix a(2,3);
-    cnn::Matrix b(3,2);
+    cnn::Matrix a(2, 3);
+    cnn::Matrix b(3, 2);
 
     EXPECT_THROW(a - b, std::invalid_argument);
     EXPECT_THROW(a -= b, std::invalid_argument);
 }
 
 TEST(Matrix, SubtractionAssignment){
-    cnn::Matrix a(2,2, 3.3);
-    cnn::Matrix b(2,2, 1.1);
+    cnn::Matrix a(2, 2, 3.3);
+    cnn::Matrix b(2, 2, 1.1);
     cnn::Matrix expected(2,2, 2.2);
 
     a -= b;
@@ -250,8 +250,8 @@ TEST(Matrix, SubtractionAssignment){
 }
 
 TEST(Matrix, Subtraction){
-    cnn::Matrix a(2,2, 3.3);
-    cnn::Matrix b(2,2, 1.1);
+    cnn::Matrix a(2, 2, 3.3);
+    cnn::Matrix b(2, 2, 1.1);
     cnn::Matrix expected(2,2, 2.2);
 
     cnn::Matrix c = a - b;
@@ -263,9 +263,9 @@ TEST(Matrix, Subtraction){
 }
 
 TEST(Matrix, SubtractionAssignmentReturnsReference){
-    cnn::Matrix a(2,2, 1.0);
-    cnn::Matrix b(2,2, 2.0);
-    cnn::Matrix c(2,2, 3.0);
+    cnn::Matrix a(2, 2, 1.0);
+    cnn::Matrix b(2, 2, 2.0);
+    cnn::Matrix c(2, 2, 3.0);
 
     (a -= b) -= c;
 
@@ -311,7 +311,7 @@ TEST(Matrix, ScalarMultiplication){
 }
 
 TEST(Matrix, ScalarMultiplicationAssignmentReturnsReference){
-    cnn::Matrix a(2,2, 1.0);
+    cnn::Matrix a(2, 2, 1.0);
 
     (a *= 2.0) *= 4.f;
 
@@ -319,8 +319,8 @@ TEST(Matrix, ScalarMultiplicationAssignmentReturnsReference){
 }
 
 TEST(Matrix, MultiplicationThrowsForIncorrectDimensions){
-    cnn::Matrix a(3,2);
-    cnn::Matrix b(3,2);
+    cnn::Matrix a(3, 2);
+    cnn::Matrix b(3, 2);
 
     EXPECT_THROW(a * b, std::invalid_argument);
 }
@@ -343,8 +343,8 @@ TEST(Matrix, Multiplication){
 }
 
 TEST(Matrix, Multiplication1x1){
-    cnn::Matrix a(1,1, 2.0);
-    cnn::Matrix b(1,1, 3.0);
+    cnn::Matrix a(1, 1, 2.0);
+    cnn::Matrix b(1, 1, 3.0);
 
     cnn::Matrix c = a * b;
 
@@ -354,8 +354,8 @@ TEST(Matrix, Multiplication1x1){
 }
 
 TEST(Matrix, MultiplicationByZero){
-    cnn::Matrix a(2,2, 2.0);
-    cnn::Matrix b(2,2, 0.0);
+    cnn::Matrix a(2, 2, 2.0);
+    cnn::Matrix b(2, 2, 0.0);
     cnn::Matrix expected{{0.0, 0.0},
                          {0.0, 0.0}};
 
@@ -365,7 +365,7 @@ TEST(Matrix, MultiplicationByZero){
 }
 
 TEST(Matrix, MultiplicationOfTheSameMatrices){
-    cnn::Matrix a(3,3);
+    cnn::Matrix a(3, 3);
     FillMatrix(a);
     cnn::Matrix b = a;
     cnn::Matrix expected{{30.0, 36.0, 42.0},

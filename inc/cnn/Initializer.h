@@ -4,10 +4,10 @@
 
 namespace cnn::initializer{
 
-Matrix zeros(size_t, size_t);
+Matrix zeros(size_t rows, size_t cols);
 
-Matrix ones(size_t, size_t);
+Matrix ones(size_t rows, size_t cols);
 
-Matrix random(size_t, size_t, double min = -1.0, double max = 1.0);
+Matrix random(size_t rows, size_t cols, double min = -1.0, double max = 1.0);
 
 } // namespace cnn::initializer

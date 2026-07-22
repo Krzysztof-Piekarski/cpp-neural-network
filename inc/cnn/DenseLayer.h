@@ -1,13 +1,13 @@
+#pragma once
+
 #include <cnn/Activation.h>
 #include <cnn/Matrix.h>
-#include <functional>
+#include <cnn/Types.h>
 
 namespace cnn{
 
 class DenseLayer{
     public:
-        using ActivationFunction = std::function<double(double)>;
-
         DenseLayer(size_t inputSize,
                    size_t outputSize,
                    ActivationFunction activation = activation::sigmoid);
@@ -17,10 +17,12 @@ class DenseLayer{
         const Matrix& weights() const noexcept;
         const Matrix& bias() const noexcept;
 
-        void setWeights(const Matrix&);
-        void setBias(const Matrix&);
+        void setWeights(Matrix);
+        void setBias(Matrix);
     
     private:
+        static Matrix createRandomWeights(size_t inputSize, size_t outputSize);
+
         Matrix weights_;
         Matrix bias_;
         ActivationFunction activation_;

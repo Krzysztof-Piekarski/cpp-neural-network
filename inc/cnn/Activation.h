@@ -2,16 +2,16 @@
 
 namespace cnn::activation{
 
-double sigmoid(double) noexcept;
+double sigmoid(double x) noexcept;
 
-double sigmoidDerivative(double) noexcept;
+double sigmoidDerivative(double x) noexcept;
 
-double relu(double) noexcept;
+double relu(double x) noexcept;
 
-double reluDerivative(double) noexcept;
+double reluDerivative(double x) noexcept;
 
-double tanh(double) noexcept;
+double tanh(double x) noexcept;
 
-double tanhDerivative(double) noexcept;
+double tanhDerivative(double x) noexcept;
 
 } // namespace cnn::activation
