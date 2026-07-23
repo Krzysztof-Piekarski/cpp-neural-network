@@ -29,19 +29,18 @@ void Matrix::checkInitializerList(const std::initializer_list<std::initializer_l
 Matrix::Matrix(std::initializer_list<std::initializer_list<double>> values)
     : rows_(values.size()),
       cols_(values.size() == 0 ? 0 : values.begin()->size()),
-      data_(rows_ * cols_)
-      {
-        if (rows_ == 0){
-          return;
-        }
-        checkInitializerList(values);
+      data_(rows_ * cols_){
+  if(rows_ == 0){
+    return;
+  }
+  checkInitializerList(values);
 
-        size_t index{0};
-        for(const auto& row : values){
-          for(const double value : row){
-            data_[index++] = value;
-          }
-        }
+  size_t index{0};
+  for(const auto& row : values){
+    for(const double value : row){
+      data_[index++] = value;
+    }
+  }
 }
 
 size_t Matrix::rows() const noexcept{

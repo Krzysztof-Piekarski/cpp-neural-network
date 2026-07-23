@@ -10,7 +10,8 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(cnn_tests
-    DenseLayer.cc
+    LossTests.cc
+    DenseLayerTests.cc
     ActivationTests.cc
     InitializerTest.cc
     MatrixTests.cc

@@ -4,7 +4,7 @@
 namespace cnn::activation{
 
 double sigmoid(double x) noexcept{
-    if (x >= 0.0){
+    if(x >= 0.0){
         double e = std::exp(-x);
         return 1.0 / (1.0 + e);
     }

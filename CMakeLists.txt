@@ -13,6 +13,7 @@ add_library(cnn
     src/Activation.cc
     src/Initializer.cc
     src/DenseLayer.cc
+    src/Loss.cc
 )
 
 target_include_directories(cnn
