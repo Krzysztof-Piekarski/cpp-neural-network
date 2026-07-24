@@ -57,4 +57,12 @@ void DenseLayer::setBias(Matrix bias){
     bias_ = std::move(bias);
 }
 
+size_t DenseLayer::inputSize() const noexcept{
+    return weights_.cols();
+}
+
+size_t DenseLayer::outputSize() const noexcept{
+    return weights_.rows();
+}
+
 } //namespace cnn

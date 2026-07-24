@@ -177,3 +177,15 @@ TEST(DenseLayer, ForwardAppliesActivationAfterBias){
 
     EXPECT_TRUE(result == expected);
 }
+
+TEST(DenseLayer, InputSize){
+    cnn::DenseLayer layer(3, 7);
+
+    EXPECT_EQ(layer.inputSize(), 3);
+}
+
+TEST(DenseLayer, OutputSize){
+    cnn::DenseLayer layer(3, 7);
+
+    EXPECT_EQ(layer.outputSize(), 7);
+}

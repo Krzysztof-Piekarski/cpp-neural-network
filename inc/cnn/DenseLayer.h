@@ -19,6 +19,9 @@ class DenseLayer{
 
         void setWeights(Matrix);
         void setBias(Matrix);
+
+        size_t inputSize() const noexcept;
+        size_t outputSize() const noexcept;
     
     private:
         static Matrix createRandomWeights(size_t inputSize, size_t outputSize);

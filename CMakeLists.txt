@@ -14,6 +14,7 @@ add_library(cnn
     src/Initializer.cc
     src/DenseLayer.cc
     src/Loss.cc
+    src/NeuralNetwork.cc
 )
 
 target_include_directories(cnn
