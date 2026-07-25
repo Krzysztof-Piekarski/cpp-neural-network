@@ -10,7 +10,7 @@ class DenseLayer{
     public:
         DenseLayer(size_t inputSize,
                    size_t outputSize,
-                   ActivationFunction activation = activation::sigmoid);
+                   ActivationType activation = ActivationType::Sigmoid);
 
         Matrix forward(const Matrix& input) const;
 
@@ -28,7 +28,7 @@ class DenseLayer{
 
         Matrix weights_;
         Matrix bias_;
-        ActivationFunction activation_;
+        ActivationType activation_;
 };
 
 } // namespace cnn

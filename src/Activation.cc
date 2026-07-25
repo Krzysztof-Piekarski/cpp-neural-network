@@ -1,4 +1,6 @@
 #include <cnn/Activation.h>
+#include <cnn/Types.h>
+#include <stdexcept>
 #include <cmath>
 
 namespace cnn::activation{
@@ -32,6 +34,42 @@ double tanh(double x) noexcept{
 double tanhDerivative(double x) noexcept{
     double tanh = std::tanh(x);
     return 1.0 - (tanh * tanh);
+}
+
+double apply(double x, ActivationType type){
+    switch(type){
+        case ActivationType::Sigmoid:
+            return sigmoid(x);
+
+        case ActivationType::Relu:
+            return relu(x);
+        
+        case ActivationType::Tanh:
+            return tanh(x);
+
+        default:
+            throw std::invalid_argument(
+                "Unknown activation."
+            );
+    }
+}
+
+double derivative(double x, ActivationType type){
+    switch(type){
+        case ActivationType::Sigmoid:
+            return sigmoidDerivative(x);
+
+        case ActivationType::Relu:
+            return reluDerivative(x);
+        
+        case ActivationType::Tanh:
+            return tanhDerivative(x);
+
+        default:
+            throw std::invalid_argument(
+                "Unknown activation."
+            );
+    }
 }
 
 } // namespace cnn::activation

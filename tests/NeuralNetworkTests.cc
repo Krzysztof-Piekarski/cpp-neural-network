@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <cnn/NeuralNetwork.h>
+#include <cnn/Types.h>
 
 TEST(NeuralNetwork, AddLayerThrowsForInputSizeDoesNotMatchPreviousLayerOutput){
     cnn::NeuralNetwork net;
@@ -23,7 +24,7 @@ TEST(NeuralNetwork, AddLayerAcceptsMatchingLayers){
 TEST(NeuralNetwork, AddLayerStoresLayer){
     cnn::NeuralNetwork net;
     
-    cnn::DenseLayer layer(2,1, cnn::activation::relu);
+    cnn::DenseLayer layer(2,1, cnn::ActivationType::Relu);
     layer.setWeights({{5,8}});
 
     net.addLayer(layer);
@@ -71,8 +72,8 @@ TEST(NeuralNetwork, PredictSingleLayer){
 
 TEST(NeuralNetwork, PredictTwoLayers){
     cnn::NeuralNetwork net;
-    cnn::DenseLayer layer1(2,2, cnn::activation::relu);
-    cnn::DenseLayer layer2(2,1, cnn::activation::relu);
+    cnn::DenseLayer layer1(2,2, cnn::ActivationType::Relu);
+    cnn::DenseLayer layer2(2,1, cnn::ActivationType::Relu);
 
     layer1.setWeights({{1, 0},
                        {0, 1}});
@@ -87,8 +88,8 @@ TEST(NeuralNetwork, PredictTwoLayers){
 
 TEST(NeuralNetwork, PredictTwoLayersWithDifferentActivationFunction){
     cnn::NeuralNetwork net;
-    cnn::DenseLayer layer1(2,2, cnn::activation::relu);
-    cnn::DenseLayer layer2(2,1, cnn::activation::sigmoid);
+    cnn::DenseLayer layer1(2,2, cnn::ActivationType::Relu);
+    cnn::DenseLayer layer2(2,1, cnn::ActivationType::Sigmoid);
 
     layer1.setWeights({{1, 0},
                        {0, 1}});
@@ -100,13 +101,14 @@ TEST(NeuralNetwork, PredictTwoLayersWithDifferentActivationFunction){
     cnn::Matrix output = net.predict(cnn::Matrix{{1.0},
                                                  {2.0}});
 
-    EXPECT_TRUE(output == cnn::Matrix{{cnn::activation::sigmoid(8.0)}});
+    EXPECT_TRUE(output == cnn::Matrix{{cnn::activation::apply(8.0,
+                                       cnn::ActivationType::Sigmoid)}});
 }
 
 TEST(NeuralNetwork, PredictTwoLayersWithBiases){
     cnn::NeuralNetwork net;
-    cnn::DenseLayer layer1(2,2, cnn::activation::relu);
-    cnn::DenseLayer layer2(2,1, cnn::activation::relu);
+    cnn::DenseLayer layer1(2,2, cnn::ActivationType::Relu);
+    cnn::DenseLayer layer2(2,1, cnn::ActivationType::Relu);
 
     layer1.setWeights({{1, 0},
                        {0, 1}});
@@ -124,8 +126,8 @@ TEST(NeuralNetwork, PredictTwoLayersWithBiases){
 
 TEST(NeuralNetwork, PredictIsDeterministic){
     cnn::NeuralNetwork net;
-    cnn::DenseLayer layer1(2,2, cnn::activation::relu);
-    cnn::DenseLayer layer2(2,1, cnn::activation::relu);
+    cnn::DenseLayer layer1(2,2, cnn::ActivationType::Relu);
+    cnn::DenseLayer layer2(2,1, cnn::ActivationType::Relu);
     cnn::Matrix input{{1.0},
                       {2.0}};
 

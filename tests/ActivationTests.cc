@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <cnn/Activation.h>
 #include <cnn/Common.h>
+#include <cnn/Types.h>
 
 TEST(Activation, Sigmoid){
     EXPECT_LT(cnn::activation::sigmoid(-2), cnn::activation::sigmoid(-1));
@@ -71,4 +72,46 @@ TEST(Activation, TanhDerivative){
     EXPECT_NEAR(cnn::activation::tanhDerivative(1000.0), 0.0, cnn::kEpsilon);
 
     EXPECT_NEAR(cnn::activation::tanhDerivative(2.4), cnn::activation::tanhDerivative(-2.4), cnn::kEpsilon);
+}
+
+TEST(Activation, ApplyThrowsForUnknownActivation){
+    cnn::ActivationType invalidType = static_cast<cnn::ActivationType>(999);
+
+    EXPECT_THROW(
+        cnn::activation::apply(1.0, invalidType), std::invalid_argument
+    );
+}
+
+TEST(Activation, DerivativeThrowsForUnknownActivation){
+    cnn::ActivationType invalidType = static_cast<cnn::ActivationType>(999);
+
+    EXPECT_THROW(
+        cnn::activation::derivative(1.0, invalidType), std::invalid_argument
+    );
+}
+
+TEST(Activation, ApplyUsesCorrectFunction){
+    EXPECT_NEAR(cnn::activation::apply(0.0, cnn::ActivationType::Sigmoid),
+                0.5,
+                cnn::kEpsilon);
+
+    EXPECT_DOUBLE_EQ(cnn::activation::apply(-1.0, cnn::ActivationType::Relu),
+                0.0);
+
+    EXPECT_NEAR(cnn::activation::apply(1.0, cnn::ActivationType::Tanh),
+                cnn::activation::tanh(1.0),
+                cnn::kEpsilon);
+}
+
+TEST(Activation, DerivativeUsesCorrectFunction){
+    EXPECT_NEAR(cnn::activation::derivative(0.0, cnn::ActivationType::Sigmoid),
+                0.25,
+                cnn::kEpsilon);
+
+    EXPECT_DOUBLE_EQ(cnn::activation::derivative(-1.0, cnn::ActivationType::Relu),
+                0.0);
+
+    EXPECT_NEAR(cnn::activation::derivative(0.0, cnn::ActivationType::Tanh),
+                1.0,
+                cnn::kEpsilon);
 }

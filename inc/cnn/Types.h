@@ -4,6 +4,10 @@
 
 namespace cnn{
 
-using ActivationFunction = std::function<double(double)>;
+enum class ActivationType{
+    Sigmoid,
+    Relu,
+    Tanh
+};
 
 }

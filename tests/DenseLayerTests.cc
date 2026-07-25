@@ -42,7 +42,7 @@ TEST(DenseLayer, BiasReturnsReference){
 }
 
 TEST(DenseLayer, SetWeightsThrowsForInvalidDimensions){
-    cnn::DenseLayer layer(2, 2, cnn::activation::relu);
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
 
     EXPECT_THROW(layer.setWeights(
                     cnn::Matrix{{1},
@@ -61,7 +61,7 @@ TEST(DenseLayer, SetWeights){
 }
 
 TEST(DenseLayer, SetBiasThrowsForInvalidDimensions){
-    cnn::DenseLayer layer(2, 2, cnn::activation::relu);
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
 
     EXPECT_THROW(layer.setBias(
                     cnn::Matrix{{1, 0},
@@ -80,7 +80,7 @@ TEST(DenseLayer, SetBias){
 }
 
 TEST(DenseLayer, ForwardThrowsForInvalidInputDimensions){
-    cnn::DenseLayer layer(2, 2, cnn::activation::relu);
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
 
     EXPECT_THROW(layer.forward(
                     cnn::Matrix{{1},
@@ -105,7 +105,7 @@ TEST(DenseLayer, ForwardIdentityWeights){
     cnn::Matrix expected{{3},
                          {4}};
 
-    cnn::DenseLayer layer(2, 2, cnn::activation::relu);
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
     layer.setWeights(cnn::Matrix{{1, 0},
                                  {0, 1}});
 
@@ -120,7 +120,7 @@ TEST(DenseLayer, ForwardScalesInput){
     cnn::Matrix expected{{6},
                          {8}};
 
-    cnn::DenseLayer layer(2, 2, cnn::activation::relu);
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
     layer.setWeights(cnn::Matrix{{2, 0},
                                  {0, 2}});
 
@@ -135,7 +135,7 @@ TEST(DenseLayer, ForwardAddsBias){
     cnn::Matrix expected{{13},
                          {24}};
 
-    cnn::DenseLayer layer(2, 2, cnn::activation::relu);
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
     layer.setWeights(cnn::Matrix{{1, 0},
                                  {0, 1}});
     layer.setBias(cnn::Matrix{{10},
@@ -152,7 +152,7 @@ TEST(DenseLayer, ForwardAppliesRelu){
     cnn::Matrix expected{{0},
                          {8}};
 
-    cnn::DenseLayer layer(2, 2, cnn::activation::relu);
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
     layer.setWeights(cnn::Matrix{{1, 0},
                                  {0, 1}});
 
@@ -167,7 +167,7 @@ TEST(DenseLayer, ForwardAppliesActivationAfterBias){
     cnn::Matrix expected{{10},
                          {0}};
 
-    cnn::DenseLayer layer(2, 2, cnn::activation::relu);
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
     layer.setWeights(cnn::Matrix{{2, 0},
                                  {0, 2}});
     layer.setBias(cnn::Matrix{{2},

@@ -7,10 +7,10 @@ namespace cnn{
 
 DenseLayer::DenseLayer(size_t inputSize,
                        size_t outputSize,
-                       ActivationFunction activation)
+                       ActivationType activation)
     : weights_(createRandomWeights(inputSize, outputSize)),
       bias_(initializer::zeros(outputSize, 1)),
-      activation_(std::move(activation)){}
+      activation_(activation){}
 
 Matrix DenseLayer::forward(const Matrix& input) const{
     if(input.rows() != weights_.cols()){
@@ -20,7 +20,10 @@ Matrix DenseLayer::forward(const Matrix& input) const{
     Matrix output = weights_ * input;
     output += bias_;
 
-    return output.map(activation_);
+    return output.map([this](double x){
+        return activation::apply(x, activation_);
+        }
+    );
 }
 
 Matrix DenseLayer::createRandomWeights(size_t inputSize, size_t outputSize){
