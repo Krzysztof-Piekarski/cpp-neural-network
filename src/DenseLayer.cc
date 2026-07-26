@@ -20,10 +20,48 @@ Matrix DenseLayer::forward(const Matrix& input) const{
     Matrix output = weights_ * input;
     output += bias_;
 
-    return output.map([this](double x){
-        return activation::apply(x, activation_);
+    return output.map([activation = activation_](double x){
+        return activation::apply(x, activation);
         }
     );
+}
+
+Matrix DenseLayer::forwardTraining(const Matrix& input){
+    if(input.rows() != weights_.cols()){
+        throw std::invalid_argument("Invalid input dimensions.");
+    }
+
+    inputCache_ = input;
+
+    zCache_ = weights_ * input;
+    zCache_ += bias_;
+
+    outputCache_ = zCache_.map([activation = activation_](double x){
+        return activation::apply(x, activation);
+        }
+    );
+
+    return outputCache_;
+}
+
+Matrix DenseLayer::backward(const Matrix& gradient){
+    if(gradient.rows() != outputCache_.rows() ||
+       gradient.cols() != outputCache_.cols()){
+        throw std::invalid_argument("Invalid gradient dimensions.");
+       }
+
+    Matrix activationGradient = zCache_.map(
+        [activation = activation_](double x){
+            return activation::derivative(x, activation);
+        }
+    );
+
+    Matrix dZ = gradient.hadamard(activationGradient);
+
+    weightsGradient_ = dZ * inputCache_.transpose();
+    biasGradient_ = dZ;
+
+    return weights_.transpose() * dZ;
 }
 
 Matrix DenseLayer::createRandomWeights(size_t inputSize, size_t outputSize){

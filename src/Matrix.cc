@@ -182,4 +182,16 @@ Matrix Matrix::transpose() const{
   return result;
 }
 
+Matrix Matrix::hadamard(const Matrix& other) const{
+  checkSameDimensions(other);
+
+  Matrix result(rows_, cols_);
+
+  for(size_t i{0}; i<size(); ++i){
+    result.data_[i] = data_[i] * other.data_[i];
+  }
+
+  return result;
+}
+
 } // namespace cnn

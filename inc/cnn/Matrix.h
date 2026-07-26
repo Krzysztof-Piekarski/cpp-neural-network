@@ -34,6 +34,7 @@ public:
     Matrix transpose() const;
     template<typename Function>
     Matrix map(Function fn) const;
+    Matrix hadamard(const Matrix& other) const;
 
 private:
     void checkInitializerList(const std::initializer_list<std::initializer_list<double>>& values) const;

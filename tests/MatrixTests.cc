@@ -417,3 +417,21 @@ TEST(Matrix, MapWithLambda){
                                    {3.0, 4.0},
                                    {5.0, 6.0}}));
 }
+
+TEST(Matrix, HadamardThrowsForDifferentDimensions){
+    cnn::Matrix a{{1.0, 2.0},
+                  {3.0, 4.0}};
+    cnn::Matrix b{{1.0, 2.0}};
+
+    EXPECT_THROW(a.hadamard(b), std::invalid_argument);
+}
+
+TEST(Matrix, HadamardProduct){
+    cnn::Matrix a{{1.0, 2.0},
+                  {3.0, 4.0}};
+    cnn::Matrix b{{5.0, 6.0},
+                  {7.0, 8.0}};
+
+    EXPECT_TRUE((a.hadamard(b) == cnn::Matrix{{5.0, 12.0},
+                                              {21.0, 32.0}}));
+}

@@ -13,6 +13,8 @@ class DenseLayer{
                    ActivationType activation = ActivationType::Sigmoid);
 
         Matrix forward(const Matrix& input) const;
+        Matrix forwardTraining(const Matrix& input);
+        Matrix backward(const Matrix& gradient);
 
         const Matrix& weights() const noexcept;
         const Matrix& bias() const noexcept;
@@ -29,6 +31,13 @@ class DenseLayer{
         Matrix weights_;
         Matrix bias_;
         ActivationType activation_;
+
+        Matrix inputCache_;
+        Matrix zCache_;
+        Matrix outputCache_;
+
+        Matrix weightsGradient_; 
+        Matrix biasGradient_;
 };
 
 } // namespace cnn

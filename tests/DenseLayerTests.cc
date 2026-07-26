@@ -178,6 +178,123 @@ TEST(DenseLayer, ForwardAppliesActivationAfterBias){
     EXPECT_TRUE(result == expected);
 }
 
+TEST(DenseLayer, ForwardTrainingThrowsForInvalidInputDimensions){
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
+
+    EXPECT_THROW(layer.forwardTraining(
+                    cnn::Matrix{{1},
+                                {2},
+                                {3}}), std::invalid_argument);
+}
+
+TEST(DenseLayer, ForwardTrainingUsesSigmoidByDefault){
+    cnn::DenseLayer layer(1, 1);
+
+    layer.setWeights(cnn::Matrix{{1}});
+    layer.setBias(cnn::Matrix{{0}});
+
+    cnn::Matrix result = layer.forwardTraining(cnn::Matrix{{0}});
+
+    EXPECT_NEAR(result(0,0), 0.5, cnn::kEpsilon);
+}
+
+TEST(DenseLayer, ForwardTrainingIdentityWeights){
+    cnn::Matrix input{{3},
+                      {4}};
+    cnn::Matrix expected{{3},
+                         {4}};
+
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1, 0},
+                                 {0, 1}});
+
+    cnn::Matrix result = layer.forwardTraining(input);
+
+    EXPECT_TRUE(result == expected);
+}
+
+TEST(DenseLayer, ForwardTrainingScalesInput){
+    cnn::Matrix input{{3},
+                      {4}};
+    cnn::Matrix expected{{6},
+                         {8}};
+
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{2, 0},
+                                 {0, 2}});
+
+    cnn::Matrix result = layer.forwardTraining(input);
+
+    EXPECT_TRUE(result == expected);
+}
+
+TEST(DenseLayer, ForwardTrainingAddsBias){
+    cnn::Matrix input{{3},
+                      {4}};
+    cnn::Matrix expected{{13},
+                         {24}};
+
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1, 0},
+                                 {0, 1}});
+    layer.setBias(cnn::Matrix{{10},
+                              {20}});
+
+    cnn::Matrix result = layer.forwardTraining(input);
+
+    EXPECT_TRUE(result == expected);
+}
+
+TEST(DenseLayer, ForwardTrainingAppliesRelu){
+    cnn::Matrix input{{-5},
+                      {8}};
+    cnn::Matrix expected{{0},
+                         {8}};
+
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1, 0},
+                                 {0, 1}});
+
+    cnn::Matrix result = layer.forwardTraining(input);
+
+    EXPECT_TRUE(result == expected);
+}
+
+TEST(DenseLayer, ForwardTrainingAppliesActivationAfterBias){
+    cnn::Matrix input{{4},
+                      {8}};
+    cnn::Matrix expected{{10},
+                         {0}};
+
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{2, 0},
+                                 {0, 2}});
+    layer.setBias(cnn::Matrix{{2},
+                              {-17}});
+
+    cnn::Matrix result = layer.forwardTraining(input);
+
+    EXPECT_TRUE(result == expected);
+}
+
+TEST(DenseLayer, BackwardReturnsInputGradient){
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1.0, 0.0},
+                                 {0.0, 3.0}});
+    cnn::Matrix input{{3.0},
+                      {4.0}};
+
+    layer.forwardTraining(input);
+
+    cnn::Matrix gradient{{1.0},
+                         {1.0}};
+
+    cnn::Matrix result = layer.backward(gradient);
+
+    EXPECT_TRUE((result == cnn::Matrix{{1.0},
+                                       {3.0}}));
+}
+
 TEST(DenseLayer, InputSize){
     cnn::DenseLayer layer(3, 7);
 
