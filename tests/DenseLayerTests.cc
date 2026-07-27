@@ -277,6 +277,26 @@ TEST(DenseLayer, ForwardTrainingAppliesActivationAfterBias){
     EXPECT_TRUE(result == expected);
 }
 
+TEST(DenseLayer, CallBackwardBeforeForwardTrainingThrows){
+    cnn::DenseLayer layer(2, 2);
+
+    EXPECT_THROW(layer.backward(
+                        cnn::Matrix{{1.0},
+                                    {2.0}}), std::logic_error);
+}
+
+TEST(DenseLayer, BackwardThrowsForInvalidGradientDimensions){
+    cnn::DenseLayer layer(2, 2);
+
+    layer.forwardTraining(cnn::Matrix{{1.0},
+                                      {2.0}});
+
+    EXPECT_THROW(layer.backward(
+                        cnn::Matrix{{1.0},
+                                    {2.0},
+                                    {3.0}}), std::invalid_argument);
+}
+
 TEST(DenseLayer, BackwardReturnsInputGradient){
     cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
     layer.setWeights(cnn::Matrix{{1.0, 0.0},
@@ -293,6 +313,222 @@ TEST(DenseLayer, BackwardReturnsInputGradient){
 
     EXPECT_TRUE((result == cnn::Matrix{{1.0},
                                        {3.0}}));
+}
+
+TEST(DenseLayer, CallCalculateOutputDeltaBeforeForwardTrainingThrows){
+    cnn::DenseLayer layer(2, 2);
+
+    EXPECT_THROW(layer.calculateOutputDelta(
+                        cnn::Matrix{{1.0},
+                                    {2.0}}), std::logic_error);
+}
+
+TEST(DenseLayer, CalculateOutputDeltaThrowsForInvalidDimensions){
+    cnn::DenseLayer layer(2, 2);
+
+    layer.forwardTraining(cnn::Matrix{{1.0},
+                                      {2.0}});
+
+
+    EXPECT_THROW(layer.calculateOutputDelta(
+                        cnn::Matrix{{1.0},
+                                    {2.0},
+                                    {3.0}}), std::invalid_argument);
+}
+
+TEST(DenseLayer, CalculateOutputDeltaReluPositive){
+    cnn::DenseLayer layer(1,1, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1.0}});
+
+    layer.forwardTraining(cnn::Matrix{{3.0}});
+
+    cnn::Matrix result = layer.calculateOutputDelta(cnn::Matrix{{7.0}});
+    EXPECT_TRUE((result == cnn::Matrix{{7.0}}));
+}
+
+TEST(DenseLayer, CalculateOutputDeltaReluNegative){
+    cnn::DenseLayer layer(1,1, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1.0}});
+
+    layer.forwardTraining(cnn::Matrix{{-3.0}});
+
+    cnn::Matrix result = layer.calculateOutputDelta(cnn::Matrix{{7.0}});
+    EXPECT_TRUE((result == cnn::Matrix{{0.0}}));
+}
+
+TEST(DenseLayer, CalculateOutputDeltaDefaultSigmoid){
+    cnn::DenseLayer layer(1,1);
+    layer.setWeights(cnn::Matrix{{1.0}});
+
+    layer.forwardTraining(cnn::Matrix{{0}});
+
+    cnn::Matrix result = layer.calculateOutputDelta(cnn::Matrix{{8.0}});
+    EXPECT_TRUE((result == cnn::Matrix{{2.0}}));
+}
+
+TEST(DenseLayer, CalculateOutputDeltaTanh){
+    cnn::DenseLayer layer(1,1, cnn::ActivationType::Tanh);
+    layer.setWeights(cnn::Matrix{{1.0}});
+
+    layer.forwardTraining(cnn::Matrix{{0.0}});
+
+    cnn::Matrix result = layer.calculateOutputDelta(cnn::Matrix{{4.0}});
+    EXPECT_TRUE((result == cnn::Matrix{{4.0}}));
+}
+
+TEST(DenseLayer, CalculateOutputReluManyNeurons){
+    cnn::DenseLayer layer(3,3, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1, 0, 0},
+                                 {0, 1, 0},
+                                 {0, 0, 1}});
+
+    layer.forwardTraining(cnn::Matrix{{-2.0},
+                                      {3.0},
+                                      {-5.0}});
+
+    cnn::Matrix result = layer.calculateOutputDelta(cnn::Matrix{{5.0},
+                                                                {7.0},
+                                                                {9.0}});
+    EXPECT_TRUE((result == cnn::Matrix{{0.0},
+                                       {7.0},
+                                       {0.0}}));
+}
+
+TEST(DenseLayer, CalculateBiasGradient){
+    cnn::DenseLayer layer(2,2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1, 0},
+                                 {0, 1}});
+
+    layer.forwardTraining(cnn::Matrix{{-2.0},
+                                      {3.0}});
+
+    cnn::Matrix delta = layer.calculateOutputDelta(cnn::Matrix{{5.0},
+                                                               {7.0}});
+
+    cnn::Matrix result = layer.calculateBiasGradient(delta);
+
+    EXPECT_TRUE((result == cnn::Matrix{{0.0},
+                                       {7.0}}));
+}
+
+TEST(DenseLayer, CallCalculateWeightsGradientBeforeForwardTrainingThrows){
+    cnn::DenseLayer layer(2,2);
+    cnn::Matrix delta{{5.0},
+                      {7.0}};
+
+    EXPECT_THROW(layer.calculateWeightsGradient(delta), std::logic_error);
+}
+
+TEST(DenseLayer, CalculateWeightsGradientThrowsForInvalidDeltaDimensions){
+    cnn::DenseLayer layer(2,2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1, 0},
+                                 {0, 1}});
+
+    layer.forwardTraining(cnn::Matrix{{-2.0},
+                                      {3.0}});
+
+    cnn::Matrix delta{{5.0},
+                      {7.0},
+                      {9.0}};
+
+    EXPECT_THROW(layer.calculateWeightsGradient(delta), std::invalid_argument);
+}
+
+TEST(DenseLayer, CalculateWeightsGradient){
+    cnn::DenseLayer layer(2,2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1, 0},
+                                 {0, 1}});
+
+    layer.forwardTraining(cnn::Matrix{{2.0},
+                                      {3.0}});
+
+    cnn::Matrix delta = layer.calculateOutputDelta(cnn::Matrix{{5.0},
+                                                               {7.0}});
+
+    cnn::Matrix result = layer.calculateWeightsGradient(delta);
+
+    EXPECT_TRUE((result == cnn::Matrix{{10.0, 15.0},
+                                       {14.0, 21.0}}));
+}
+
+TEST(DenseLayer, CallCalculateHiddenDeltaBeforeForwardTrainingThrows){
+    cnn::DenseLayer layer(2,2);
+    cnn::Matrix nextDelta{{1.0},
+                          {2.0}};
+
+    cnn::Matrix nextWeights{{1.0, 0.0},
+                            {0.0, 1.0}};
+
+    EXPECT_THROW(layer.calculateHiddenDelta(nextDelta, nextWeights), 
+                                              std::logic_error);
+}
+
+TEST(DenseLayer, CalculateHiddenDeltaThrowsForMismatchedNextWeights){
+    cnn::DenseLayer layer(2,2);
+
+    layer.forwardTraining(cnn::Matrix{{2.0},
+                                      {3.0}});
+
+    cnn::Matrix nextDelta{{1.0},
+                          {2.0}};
+
+    cnn::Matrix nextWeights{{1.0},
+                            {0.0}};
+
+    EXPECT_THROW(layer.calculateHiddenDelta(nextDelta, nextWeights), 
+                                              std::invalid_argument);
+}
+
+TEST(DenseLayer, CalculateHiddenDeltaThrowsForInvalidNextDeltaDimensions){
+    cnn::DenseLayer layer(2,2);
+
+    layer.forwardTraining(cnn::Matrix{{2.0},
+                                      {3.0}});
+
+    cnn::Matrix nextDelta{{1.0, 0.0},
+                          {2.0, 1.0}};
+
+    cnn::Matrix nextWeights{{1.0, 0.0},
+                            {0.0, 1.0}};
+
+    EXPECT_THROW(layer.calculateHiddenDelta(nextDelta, nextWeights), 
+                                              std::invalid_argument);
+}
+
+TEST(DenseLayer, CalculateHiddenDelta){
+    cnn::DenseLayer layer(2,2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1.0, 0.0},
+                                 {0.0, 1.0}});
+
+    layer.forwardTraining(cnn::Matrix{{2.0},
+                                      {-1.0}});
+
+    cnn::Matrix nextDelta{{5.0}};
+
+    cnn::Matrix nextWeights{{2.0, 3.0}};
+
+    cnn::Matrix result = layer.calculateHiddenDelta(nextDelta, nextWeights);
+
+    EXPECT_TRUE((result == cnn::Matrix{{10.0},
+                                       {0.0}}));
+}
+
+TEST(DenseLayer, CalculateHiddenDeltaReluBlocksNegativeValues){
+    cnn::DenseLayer layer(2,2, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1.0, 0.0},
+                                 {0.0, 1.0}});
+
+    layer.forwardTraining(cnn::Matrix{{-2.0},
+                                      {-1.0}});
+
+    cnn::Matrix nextDelta{{5.0}};
+
+    cnn::Matrix nextWeights{{2.0, 3.0}};
+
+    cnn::Matrix result = layer.calculateHiddenDelta(nextDelta, nextWeights);
+
+    EXPECT_TRUE((result == cnn::Matrix{{0.0},
+                                       {0.0}}));
 }
 
 TEST(DenseLayer, InputSize){

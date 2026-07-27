@@ -3,6 +3,7 @@
 #include <cnn/Activation.h>
 #include <cnn/Matrix.h>
 #include <cnn/Types.h>
+#include <optional>
 
 namespace cnn{
 
@@ -15,6 +16,12 @@ class DenseLayer{
         Matrix forward(const Matrix& input) const;
         Matrix forwardTraining(const Matrix& input);
         Matrix backward(const Matrix& gradient);
+
+        Matrix calculateOutputDelta(const Matrix& lossGradient) const;
+        Matrix calculateBiasGradient(const Matrix& delta) const;
+        Matrix calculateWeightsGradient(const Matrix& delta) const;
+        Matrix calculateHiddenDelta(const Matrix& nextDelta,
+                                    const Matrix& nextWeights) const;
 
         const Matrix& weights() const noexcept;
         const Matrix& bias() const noexcept;
@@ -32,9 +39,9 @@ class DenseLayer{
         Matrix bias_;
         ActivationType activation_;
 
-        Matrix inputCache_;
-        Matrix zCache_;
-        Matrix outputCache_;
+        std::optional<Matrix> inputCache_;
+        std::optional<Matrix> zCache_;
+        std::optional<Matrix> outputCache_;
 
         Matrix weightsGradient_; 
         Matrix biasGradient_;
