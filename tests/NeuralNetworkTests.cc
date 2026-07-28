@@ -34,6 +34,51 @@ TEST(NeuralNetwork, AddLayerStoresLayer){
     EXPECT_TRUE(net.predict(cnn::Matrix{{1},{1}}) == cnn::Matrix{{13.0}});
 }
 
+TEST(NeuralNetwork, EmptyNeuralNetworkThrowsForForwardTraining){
+    cnn::NeuralNetwork net;
+
+    EXPECT_THROW(net.forwardTraining(cnn::Matrix{{1}, {2}}), std::logic_error);
+}
+
+TEST(NeuralNetwork, ForwardTrainingThrowsForNotMatchingInputSize){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{-1}, {2}};
+    cnn::DenseLayer layer(3,2);
+
+    net.addLayer(layer);
+
+    EXPECT_THROW(net.forwardTraining(input), std::invalid_argument);
+}
+
+TEST(NeuralNetwork, ForwardTrainingSingleLayer){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{-1}, {2}, {0}};
+    cnn::DenseLayer layer(3,3);
+
+    net.addLayer(layer);
+
+    EXPECT_TRUE(net.forwardTraining(input) == layer.forwardTraining(input));
+}
+
+TEST(NeuralNetwork, ForwardTrainingTwoLayersWithBiases){
+    cnn::NeuralNetwork net;
+    cnn::DenseLayer layer1(2,2, cnn::ActivationType::Relu);
+    cnn::DenseLayer layer2(2,1, cnn::ActivationType::Relu);
+
+    layer1.setWeights({{1, 0},
+                       {0, 1}});
+    layer2.setWeights({{2, 3}});
+
+    layer1.setBias({{1}, {1}});
+    layer2.setBias({{2}});
+
+    net.addLayer(layer1);
+    net.addLayer(layer2);
+
+    EXPECT_TRUE(net.forwardTraining(cnn::Matrix{{1.0},
+                                                {2.0}}) == cnn::Matrix{{15.0}});
+}
+
 TEST(NeuralNetwork, EmptyNeuralNetworkThrowsForPredict){
     cnn::NeuralNetwork net;
 
@@ -146,4 +191,69 @@ TEST(NeuralNetwork, PredictIsDeterministic){
     EXPECT_TRUE(output1 == output2 &&
                 output2 == output3 &&
                 output3 == output4);
+}
+
+TEST(NeuralNetwork, PredictReturnsTheSameOutputAsForwardTraining){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{1.0},
+                      {2.0}};
+    cnn::DenseLayer layer1(2,2, cnn::ActivationType::Relu);
+    cnn::DenseLayer layer2(2,1, cnn::ActivationType::Relu);
+    cnn::DenseLayer layer3(1,1, cnn::ActivationType::Relu);
+
+    layer1.setWeights({{1, 0},
+                       {0, 1}});
+    layer2.setWeights({{2,3}});
+    layer3.setWeights({{1}});
+
+    layer1.setBias({{1}, {1}});
+    layer2.setBias({{2}});
+    layer3.setBias({{5}});
+
+    net.addLayer(layer1);
+    net.addLayer(layer2);
+    net.addLayer(layer3);
+
+    cnn::Matrix result = net.forwardTraining(input);
+    EXPECT_TRUE(result == cnn::Matrix{{20.0}});
+    EXPECT_TRUE(result == net.predict(input));
+}
+
+TEST(NeuralNetwork, EmptyNeuralNetworkThrowsForBackward){
+    cnn::NeuralNetwork net;
+
+    EXPECT_THROW(net.backward(cnn::Matrix{{1}, {2}}), std::logic_error);
+}
+
+TEST(NeuralNetwork, BackwardBeforeForwardTrainingThrows){
+    cnn::NeuralNetwork net;
+    cnn::Matrix gradient{{1}, {2}};
+    cnn::DenseLayer layer(2,2);
+    net.addLayer(layer);
+
+    EXPECT_THROW(net.backward(cnn::Matrix{{1}, {2}}), std::logic_error);
+}
+
+TEST(NeuralNetwork, BackwardThrowsForInvalidGradientDimensions){
+    cnn::NeuralNetwork net;
+    cnn::Matrix gradient{{1}, {2}, {3}};
+    cnn::DenseLayer layer(2,2);
+    net.addLayer(layer);
+
+    net.forwardTraining(cnn::Matrix{{1.0},
+                                    {2.0}});
+
+    EXPECT_THROW(net.backward(gradient), std::invalid_argument);
+}
+
+TEST(NeuralNetwork, BackwardAcceptsMatchingGradientDimensions){
+    cnn::NeuralNetwork net;
+    cnn::Matrix gradient{{1}, {2}};
+    cnn::DenseLayer layer(2,2);
+    net.addLayer(layer);
+
+    net.forwardTraining(cnn::Matrix{{1.0},
+                                    {2.0}});
+
+    EXPECT_NO_THROW((net.backward(gradient)));
 }

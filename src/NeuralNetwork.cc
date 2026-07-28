@@ -15,6 +15,42 @@ void NeuralNetwork::addLayer(DenseLayer layer){
     layers_.push_back(std::move(layer));
 }
 
+Matrix NeuralNetwork::forwardTraining(const Matrix& input){
+    if(layers_.empty()){
+        throw std::logic_error(
+            "Neural network has no layers."
+        );
+    }
+
+    if(input.rows() != layers_.front().inputSize()){
+        throw std::invalid_argument(
+            "Input size does not match first layer."
+        );
+    }
+
+    Matrix output = input;
+
+    for(auto& layer : layers_){
+        output = layer.forwardTraining(output);
+    }
+
+    return output;
+}
+
+void NeuralNetwork::backward(const Matrix& lossGradient){
+    if(layers_.empty()){
+        throw std::logic_error(
+            "Neural network has no layers."
+        );
+    }
+
+    Matrix gradient = lossGradient;
+
+    for(auto it = layers_.rbegin(); it != layers_.rend(); ++it){
+        gradient = it->backward(gradient);
+    }
+}
+
 Matrix NeuralNetwork::predict(const Matrix& input) const{
     if(layers_.empty()){
         throw std::logic_error(
@@ -37,4 +73,4 @@ Matrix NeuralNetwork::predict(const Matrix& input) const{
     return output;
 }
 
-} // namespace cnns
+} // namespace cnn
