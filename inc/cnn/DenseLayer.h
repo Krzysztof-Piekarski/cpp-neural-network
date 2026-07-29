@@ -16,6 +16,7 @@ class DenseLayer{
         Matrix forward(const Matrix& input) const;
         Matrix forwardTraining(const Matrix& input);
         Matrix backward(const Matrix& gradient);
+        void updateParameters(double learningRate);
 
         Matrix calculateOutputDelta(const Matrix& lossGradient) const;
         Matrix calculateBiasGradient(const Matrix& delta) const;
@@ -43,8 +44,8 @@ class DenseLayer{
         std::optional<Matrix> zCache_;
         std::optional<Matrix> outputCache_;
 
-        Matrix weightsGradient_; 
-        Matrix biasGradient_;
+        std::optional<Matrix> weightsGradient_; 
+        std::optional<Matrix> biasGradient_;
 };
 
 } // namespace cnn

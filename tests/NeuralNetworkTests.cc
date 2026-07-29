@@ -231,7 +231,7 @@ TEST(NeuralNetwork, BackwardBeforeForwardTrainingThrows){
     cnn::DenseLayer layer(2,2);
     net.addLayer(layer);
 
-    EXPECT_THROW(net.backward(cnn::Matrix{{1}, {2}}), std::logic_error);
+    EXPECT_THROW(net.backward(gradient), std::logic_error);
 }
 
 TEST(NeuralNetwork, BackwardThrowsForInvalidGradientDimensions){
@@ -256,4 +256,32 @@ TEST(NeuralNetwork, BackwardAcceptsMatchingGradientDimensions){
                                     {2.0}});
 
     EXPECT_NO_THROW((net.backward(gradient)));
+}
+
+TEST(NeuralNetwork, EmptyNeuralNetworkThrowsForUpdateParameters){
+    cnn::NeuralNetwork net;
+
+    EXPECT_THROW(net.updateParameters(1.0), std::logic_error);
+}
+
+TEST(NeuralNetwork, UpdateParametersBeforeBackwardThrows){
+    cnn::NeuralNetwork net;
+    cnn::DenseLayer layer(2,2);
+    net.addLayer(layer);
+
+    EXPECT_THROW(net.updateParameters(1.0), std::logic_error);
+}
+
+TEST(NeuralNetwork, UpdateParametersThrowsForInvalidLearningRate){
+    cnn::NeuralNetwork net;
+    cnn::DenseLayer layer(2,2);
+    net.addLayer(layer);
+
+    net.forwardTraining(cnn::Matrix{{1.0},
+                                    {2.0}});
+
+    net.backward(cnn::Matrix{{1.0},
+                             {2.0}});
+
+    EXPECT_THROW(net.updateParameters(-3.0), std::invalid_argument);
 }

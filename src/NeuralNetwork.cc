@@ -51,6 +51,18 @@ void NeuralNetwork::backward(const Matrix& lossGradient){
     }
 }
 
+void NeuralNetwork::updateParameters(double learnigRate){
+    if(layers_.empty()){
+        throw std::logic_error(
+            "Neural network has no layers."
+        );
+    }
+
+    for(auto& layer : layers_){
+        layer.updateParameters(learnigRate);
+    }
+}
+
 Matrix NeuralNetwork::predict(const Matrix& input) const{
     if(layers_.empty()){
         throw std::logic_error(

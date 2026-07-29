@@ -315,6 +315,70 @@ TEST(DenseLayer, BackwardReturnsInputGradient){
                                        {3.0}}));
 }
 
+TEST(DenseLayer, CallUpdateParametersBeforeBackwardThrows){
+    cnn::DenseLayer layer(2, 2);
+
+    EXPECT_THROW(layer.updateParameters(1.0), std::logic_error);
+}
+
+TEST(DenseLayer, UpdateParametersThrowsForInvalidLearningRate){
+    cnn::DenseLayer layer(2, 2);
+    cnn::Matrix input{{3.0},
+                      {4.0}};
+
+    layer.forwardTraining(input);
+
+    cnn::Matrix gradient{{1.0},
+                         {1.0}};
+
+    layer.backward(gradient);
+
+    EXPECT_THROW(layer.updateParameters(0.0), std::invalid_argument);
+    EXPECT_THROW(layer.updateParameters(-0.01), std::invalid_argument);
+}
+
+TEST(DenseLayer, UpdateParametersResetsGradients){
+    cnn::DenseLayer layer(2, 2);
+    cnn::Matrix input{{3.0},
+                      {4.0}};
+
+    layer.forwardTraining(input);
+
+    cnn::Matrix gradient{{1.0},
+                         {1.0}};
+
+    layer.backward(gradient);
+
+    layer.updateParameters(0.1);
+
+    EXPECT_THROW(layer.updateParameters(0.1), std::logic_error);
+}
+
+TEST(DenseLayer, UpdateParameters){
+    cnn::DenseLayer layer(2, 2, cnn::ActivationType::Relu);
+    cnn::Matrix expectedWeightsAfterUpdate{{0.7, 1.4},
+                                           {2.7, 3.4}};
+    cnn::Matrix expectedBiasesAfterUpdate{{4.7},
+                                          {5.7}};
+
+    layer.setWeights(cnn::Matrix{{1.0, 2.0},
+                                 {3.0, 4.0}});
+
+    layer.setBias(cnn::Matrix{{5.0},
+                              {6.0}});
+
+    layer.forwardTraining(cnn::Matrix{{1.0},
+                                      {2.0}});
+
+    layer.backward(cnn::Matrix{{1.0},
+                               {1.0}});
+
+    layer.updateParameters(0.3);
+    
+    EXPECT_TRUE(layer.weights() == expectedWeightsAfterUpdate);
+    EXPECT_TRUE(layer.bias() == expectedBiasesAfterUpdate);
+}
+
 TEST(DenseLayer, CallCalculateOutputDeltaBeforeForwardTrainingThrows){
     cnn::DenseLayer layer(2, 2);
 

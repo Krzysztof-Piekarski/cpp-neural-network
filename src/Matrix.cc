@@ -158,6 +158,12 @@ bool Matrix::operator==(const Matrix& other) const noexcept{
   }
 
   for(size_t i{0}; i<size(); ++i){
+    printf("%f\n", data_[i]);
+  }
+      printf("\n");
+
+
+  for(size_t i{0}; i<size(); ++i){
     if(std::abs(data_[i] - other.data_[i]) > kEpsilon){
       return false;
     }

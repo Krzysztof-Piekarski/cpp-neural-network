@@ -64,6 +64,35 @@ Matrix DenseLayer::backward(const Matrix& gradient){
     return weights_.transpose() * dZ;
 }
 
+void DenseLayer::updateParameters(double learningRate){
+    if(!weightsGradient_ || !biasGradient_){
+        throw std::logic_error(
+            "backward() must be called before updateParameters()."
+        );
+    }
+
+    if(learningRate <= 0.0){
+        throw std::invalid_argument(
+            "Learning rate must be greater than zero."
+        );
+    }
+
+    weights_ -= weightsGradient_->map(
+        [learningRate](double x){
+            return x * learningRate;
+        }
+    );
+
+    bias_ -= biasGradient_->map(
+        [learningRate](double x){
+            return x * learningRate;
+        }
+    );
+
+    weightsGradient_.reset();
+    biasGradient_.reset();
+}
+
 Matrix DenseLayer::calculateOutputDelta(const Matrix& lossGradient) const{
     if(!zCache_){
         throw std::logic_error(
