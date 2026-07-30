@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <cnn/NeuralNetwork.h>
 #include <cnn/Types.h>
+#include <cnn/Loss.h>
 
 TEST(NeuralNetwork, AddLayerThrowsForInputSizeDoesNotMatchPreviousLayerOutput){
     cnn::NeuralNetwork net;
@@ -284,4 +285,76 @@ TEST(NeuralNetwork, UpdateParametersThrowsForInvalidLearningRate){
                              {2.0}});
 
     EXPECT_THROW(net.updateParameters(-3.0), std::invalid_argument);
+}
+
+TEST(NeuralNetwork, EmptyNeuralNetworkThrowsForFit){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{1.0},
+                      {2.0}};
+    cnn::Matrix target{{2.0},
+                       {1.0}};
+    double learningRate{0.3};
+
+    EXPECT_THROW(net.fit(input, target, learningRate), std::logic_error);
+}
+
+TEST(NeuralNetwork, FitThrowsForNotMatchingTargetSize){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{1.0},
+                      {2.0}};
+    cnn::Matrix target{{1.0}};
+    double learningRate{0.3};
+
+    cnn::DenseLayer layer(2,2);
+    net.addLayer(layer);
+
+    EXPECT_THROW(net.fit(input, target, learningRate), std::invalid_argument);
+}
+
+TEST(NeuralNetwork, FitThrowsForInvalidLearningRate){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{1.0},
+                      {2.0}};
+    cnn::Matrix target{{2.0},
+                       {1.0}};
+    double learningRate{-0.3};
+
+    cnn::DenseLayer layer(2,2);
+    net.addLayer(layer);
+
+    EXPECT_THROW(net.fit(input, target, learningRate), std::invalid_argument);
+}
+
+TEST(NeuralNetwork, FitAcceptsArguments){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{1.0},
+                      {2.0}};
+    cnn::Matrix target{{2.0},
+                       {1.0}};
+    double learningRate{0.3};
+
+    cnn::DenseLayer layer(2,2);
+    net.addLayer(layer);
+
+    EXPECT_NO_THROW(net.fit(input, target, learningRate));
+}
+
+TEST(NeuralNetwork, LossReducesLoss){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{1.0}};
+    cnn::Matrix target{{10.0}};
+    double learningRate{0.3};
+
+    cnn::DenseLayer layer(1,1, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1.0}});
+    layer.setBias(cnn::Matrix{{0.0}});
+    net.addLayer(layer);
+
+    double before = cnn::loss::meanSquaredError(net.predict(input), target);
+
+    net.fit(input, target, learningRate);
+
+    double after = cnn::loss::meanSquaredError(net.predict(input), target);
+
+    EXPECT_LT(after, before);
 }

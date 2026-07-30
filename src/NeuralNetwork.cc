@@ -1,4 +1,5 @@
 #include <cnn/NeuralNetwork.h>
+#include <cnn/Loss.h>
 #include <stdexcept>
 
 namespace cnn{
@@ -61,6 +62,37 @@ void NeuralNetwork::updateParameters(double learnigRate){
     for(auto& layer : layers_){
         layer.updateParameters(learnigRate);
     }
+}
+
+void NeuralNetwork::fit(const Matrix& input,
+                        const Matrix& target,
+                        double learningRate){
+    if(layers_.empty()){
+        throw std::logic_error(
+            "Neural network has no layers."
+        );
+    }
+    
+    if(target.rows() != layers_.back().outputSize() ||
+       target.cols() != 1){
+        throw std::invalid_argument(
+            "Target size does not match network output."
+        );
+    }
+
+    if(learningRate <= 0.0){
+        throw std::invalid_argument(
+            "Learning rate must be greater than zero."
+        );
+    }
+
+    Matrix prediction = forwardTraining(input);
+
+    Matrix gradient = loss::meanSquaredErrorDerivative(prediction, target);
+
+    backward(gradient);
+
+    updateParameters(learningRate);
 }
 
 Matrix NeuralNetwork::predict(const Matrix& input) const{
