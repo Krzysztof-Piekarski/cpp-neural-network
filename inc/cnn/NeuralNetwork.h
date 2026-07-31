@@ -20,6 +20,8 @@ public:
     Matrix predict(const Matrix& input) const;
 
 private:
+    void checkIfNotEmpty() const;
+
     std::vector<DenseLayer> layers_;
 };
 

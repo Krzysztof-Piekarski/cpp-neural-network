@@ -17,11 +17,7 @@ void NeuralNetwork::addLayer(DenseLayer layer){
 }
 
 Matrix NeuralNetwork::forwardTraining(const Matrix& input){
-    if(layers_.empty()){
-        throw std::logic_error(
-            "Neural network has no layers."
-        );
-    }
+    checkIfNotEmpty();
 
     if(input.rows() != layers_.front().inputSize()){
         throw std::invalid_argument(
@@ -39,11 +35,7 @@ Matrix NeuralNetwork::forwardTraining(const Matrix& input){
 }
 
 void NeuralNetwork::backward(const Matrix& lossGradient){
-    if(layers_.empty()){
-        throw std::logic_error(
-            "Neural network has no layers."
-        );
-    }
+    checkIfNotEmpty();
 
     Matrix gradient = lossGradient;
 
@@ -53,11 +45,7 @@ void NeuralNetwork::backward(const Matrix& lossGradient){
 }
 
 void NeuralNetwork::updateParameters(double learnigRate){
-    if(layers_.empty()){
-        throw std::logic_error(
-            "Neural network has no layers."
-        );
-    }
+    checkIfNotEmpty();
 
     for(auto& layer : layers_){
         layer.updateParameters(learnigRate);
@@ -67,11 +55,7 @@ void NeuralNetwork::updateParameters(double learnigRate){
 void NeuralNetwork::fit(const Matrix& input,
                         const Matrix& target,
                         double learningRate){
-    if(layers_.empty()){
-        throw std::logic_error(
-            "Neural network has no layers."
-        );
-    }
+    checkIfNotEmpty();
     
     if(target.rows() != layers_.back().outputSize() ||
        target.cols() != 1){
@@ -96,11 +80,7 @@ void NeuralNetwork::fit(const Matrix& input,
 }
 
 Matrix NeuralNetwork::predict(const Matrix& input) const{
-    if(layers_.empty()){
-        throw std::logic_error(
-            "Neural network has no layers."
-        );
-    }
+    checkIfNotEmpty();
 
     if(input.rows() != layers_.front().inputSize()){
         throw std::invalid_argument(
@@ -115,6 +95,14 @@ Matrix NeuralNetwork::predict(const Matrix& input) const{
     }
 
     return output;
+}
+
+void NeuralNetwork::checkIfNotEmpty() const{
+    if(layers_.empty()){
+        throw std::logic_error(
+            "Neural network has no layers."
+        );
+    }
 }
 
 } // namespace cnn
