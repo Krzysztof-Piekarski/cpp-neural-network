@@ -16,13 +16,8 @@ class DenseLayer{
         Matrix forward(const Matrix& input) const;
         Matrix forwardTraining(const Matrix& input);
         Matrix backward(const Matrix& gradient);
-        void updateParameters(double learningRate);
-
         Matrix calculateOutputDelta(const Matrix& lossGradient) const;
-        Matrix calculateBiasGradient(const Matrix& delta) const;
-        Matrix calculateWeightsGradient(const Matrix& delta) const;
-        Matrix calculateHiddenDelta(const Matrix& nextDelta,
-                                    const Matrix& nextWeights) const;
+        void updateParameters(double learningRate);
 
         const Matrix& weights() const noexcept;
         const Matrix& bias() const noexcept;

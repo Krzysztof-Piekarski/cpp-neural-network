@@ -114,52 +114,6 @@ Matrix DenseLayer::calculateOutputDelta(const Matrix& lossGradient) const{
     return lossGradient.hadamard(activationDerivative);
 }
 
-Matrix DenseLayer::calculateBiasGradient(const Matrix& delta) const{
-    return delta;
-}
-
-Matrix DenseLayer::calculateWeightsGradient(const Matrix& delta) const{
-    if(!inputCache_){
-        throw std::logic_error(
-            "forwardTraining() must be called before calculateWeightsGradient()."
-        );
-    }
-
-    if(delta.rows() != outputSize()){
-        throw std::invalid_argument("Invalid delta dimensions.");
-       }
-
-    return delta * inputCache_->transpose();
-}
-
-Matrix DenseLayer::calculateHiddenDelta(const Matrix& nextDelta,
-                                        const Matrix& nextWeights) const{
-    if(!inputCache_ || !zCache_){
-        throw std::logic_error(
-            "forwardTraining() must be called before calculateHiddenDelta()."
-        );
-    }
-
-    if(outputSize() != nextWeights.cols()){
-        throw std::invalid_argument("Invalid next weights dimensions.");
-       }
-
-    if(nextDelta.cols() != 1 ||
-       nextWeights.rows() != nextDelta.rows()){
-        throw std::invalid_argument("Invalid next delta dimensions.");
-       }
-
-    Matrix propagatedError = nextWeights.transpose() * nextDelta;
-
-    Matrix activationDerivative = zCache_->map(
-                [activation = activation_](double x){
-            return activation::derivative(x, activation);
-        }
-    );
-
-    return propagatedError.hadamard(activationDerivative);
-}
-
 Matrix DenseLayer::createRandomWeights(size_t inputSize, size_t outputSize){
     if(inputSize == 0 || outputSize == 0){
         throw std::invalid_argument(
