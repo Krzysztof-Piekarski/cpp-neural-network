@@ -17,6 +17,11 @@ public:
              const Matrix& target,
              double learningRate);
 
+    void fit(const Matrix& input,
+             const Matrix& target,
+             double learningRate,
+             size_t epochs);
+
     Matrix predict(const Matrix& input) const;
 
 private:

@@ -79,6 +79,21 @@ void NeuralNetwork::fit(const Matrix& input,
     updateParameters(learningRate);
 }
 
+void NeuralNetwork::fit(const Matrix& input,
+                        const Matrix& target,
+                        double learningRate,
+                        size_t epochs){
+    if(epochs == 0){
+        throw std::invalid_argument(
+            "Number of epochs must be greater than zero."
+        );
+    }
+    
+    for(size_t i{0}; i<epochs; ++i){
+        fit(input, target, learningRate);
+    }
+}
+
 Matrix NeuralNetwork::predict(const Matrix& input) const{
     checkIfNotEmpty();
 

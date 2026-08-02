@@ -358,3 +358,35 @@ TEST(NeuralNetwork, LossReducesLoss){
 
     EXPECT_LT(after, before);
 }
+
+TEST(NeuralNetwork, FitThrowsForZeroEpochs){
+    cnn::NeuralNetwork net;
+    cnn::DenseLayer layer(1,1);
+    net.addLayer(layer);
+
+    EXPECT_THROW(net.fit(cnn::Matrix{{1.0}},
+                         cnn::Matrix{{1.0}},
+                         0.3,
+                         0),
+                std::invalid_argument);
+}
+
+TEST(NeuralNetwork, MultipleEpochsReduceLoss){
+    cnn::NeuralNetwork net;
+    cnn::Matrix input{{1.0}};
+    cnn::Matrix target{{10.0}};
+    double learningRate{0.3};
+
+    cnn::DenseLayer layer(1,1, cnn::ActivationType::Relu);
+    layer.setWeights(cnn::Matrix{{1.0}});
+    layer.setBias(cnn::Matrix{{0.0}});
+    net.addLayer(layer);
+
+    double before = cnn::loss::meanSquaredError(net.predict(input), target);
+
+    net.fit(input, target, learningRate, 100);
+
+    double after = cnn::loss::meanSquaredError(net.predict(input), target);
+
+    EXPECT_LT(after, before);
+}
