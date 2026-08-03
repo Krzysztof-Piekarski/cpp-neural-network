@@ -26,9 +26,15 @@ target_compile_features(cnn PUBLIC cxx_std_20)
 
 option(BUILD_TESTING "Build unit tests" ON)
 
+option(BUILD_EXAMPLES "Build example programs" ON)
+
 if(BUILD_TESTING)
     enable_testing()
     add_subdirectory(tests)
+endif()
+
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
 endif()
 
 if (MSVC)
