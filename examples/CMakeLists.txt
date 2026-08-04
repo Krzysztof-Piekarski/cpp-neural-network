@@ -1,8 +1,8 @@
-add_executable(xor
-    xor.cc
-)
+file(GLOB EXAMPLE_SOURCES "*.cc")
 
-target_link_libraries(xor
-    PRIVATE
-        cnn
-)
+foreach(example ${EXAMPLE_SOURCES})
+    get_filename_component(name ${example} NAME_WE)
+
+    add_executable(${name} ${example})
+    target_link_libraries(${name} PRIVATE cnn)
+endforeach()

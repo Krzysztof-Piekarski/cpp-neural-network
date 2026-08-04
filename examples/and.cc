@@ -10,9 +10,9 @@ int main(){
     };
     std::vector<cnn::Matrix> targets{
         {{0.0}},
-        {{1.0}},
-        {{1.0}},
-        {{0.0}}
+        {{0.0}},
+        {{0.0}},
+        {{1.0}}
     };
     double learningRate{0.1};
 

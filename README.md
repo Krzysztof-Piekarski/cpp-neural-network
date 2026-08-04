@@ -18,7 +18,7 @@ A neural network library written from scratch in modern C++.
 - Learn how neural networks work from first principles.
 - Implement forward propagation.
 - Implement backpropagation.
-- Train the network on XOR and MNIST.
+- Train the network on logic gates (and, nand, or, xor).
 - Keep the implementation lightweight and dependency-free where possible.
 
 ## Build
