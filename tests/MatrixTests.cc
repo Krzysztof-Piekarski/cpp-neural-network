@@ -435,3 +435,22 @@ TEST(Matrix, HadamardProduct){
     EXPECT_TRUE((a.hadamard(b) == cnn::Matrix{{5.0, 12.0},
                                               {21.0, 32.0}}));
 }
+
+TEST(Matrix, StreamOutput){
+    cnn::Matrix matrix{{1.0, 2.0},
+                       {3.1, 4.2},
+                       {5.0, -6.0},
+                       {-7.2, -8.7}};
+
+    std::ostringstream out;
+    out << matrix;
+
+    EXPECT_EQ(
+        out.str(),
+        "4 2\n"
+        "1 2\n"
+        "3.1 4.2\n"
+        "5 -6\n"
+        "-7.2 -8.7\n"
+    );
+}

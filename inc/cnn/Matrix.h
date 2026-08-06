@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <vector>
+#include <iosfwd>
 
 namespace cnn{
 
@@ -46,6 +47,8 @@ private:
     size_t index(size_t row, size_t col) const noexcept;
     std::vector<double> data_;
 };
+
+std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
 
 } // namespace cnn
 

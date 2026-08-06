@@ -1,6 +1,7 @@
 #include <cnn/Matrix.h>
 #include <cnn/Common.h>
 #include <stdexcept>
+#include <ostream>
 
 namespace cnn{
 
@@ -198,6 +199,24 @@ Matrix Matrix::hadamard(const Matrix& other) const{
   }
 
   return result;
+}
+
+std::ostream& operator<<(std::ostream& os, const Matrix& matrix){
+  os << matrix.rows() << ' ' << matrix.cols() << '\n';
+  
+  for(size_t r{0}; r<matrix.rows(); ++r){
+    for(size_t c{0}; c<matrix.cols(); ++c){
+      if(c != 0){
+        os << ' ';
+      }
+
+      os << matrix(r,c);
+    }
+
+    os << '\n';
+  }
+
+  return os;
 }
 
 } // namespace cnn
