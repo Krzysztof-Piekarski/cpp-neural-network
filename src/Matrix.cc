@@ -2,6 +2,7 @@
 #include <cnn/Common.h>
 #include <stdexcept>
 #include <ostream>
+#include <iomanip>
 
 namespace cnn{
 
@@ -203,6 +204,11 @@ Matrix Matrix::hadamard(const Matrix& other) const{
 
 std::ostream& operator<<(std::ostream& os, const Matrix& matrix){
   os << matrix.rows() << ' ' << matrix.cols() << '\n';
+
+  auto oldPrecision = os.precision();
+  auto oldFlags = os.flags();
+
+  os << std::setprecision(std::numeric_limits<double>::max_digits10);
   
   for(size_t r{0}; r<matrix.rows(); ++r){
     for(size_t c{0}; c<matrix.cols(); ++c){
@@ -215,6 +221,9 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix){
 
     os << '\n';
   }
+
+  os.precision(oldPrecision);
+  os.flags(oldFlags);
 
   return os;
 }
